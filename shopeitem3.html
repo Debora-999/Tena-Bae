@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="shopitem3.css">
+    <title>Shop Item</title>
+</head>
+<body>
+    <div class="main">
+        <a href="home.html">
+            <button class="back-button" id="back">Back</button>
+        </a>
+        <div class="item">
+            <img src="https://th.bing.com/th/id/OIP.0YNQwKLltkHBDpo4AtI0XgHaHH?r=0&rs=1&pid=ImgDetMain"
+                alt="">
+            <div class="disc">
+                <h3>Stay clean and protected with our Hand Sanitizer Wipes. These convenient, antibacterial wipes effectively kill germs while moisturizing your skin. Perfect for on-the-go use, they ensure hygiene anytime, anywhere!</h3>
+            </div>
+        </div>
+        <div class="price">
+            <h3>300.00 br</h3>
+        </div>
+        <div class="quantity">
+            <button>+</button>
+            <span>1</span> <!-- Display the quantity -->
+            <button>-</button>
+        </div>
+        <div class="shopenow">
+            <button>Shop Now</button>
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const originalPrice = 300.00; // Original price
+        let quantity = 1; // Initial quantity
+
+        const quantityDisplay = document.querySelector('.quantity span');
+        const priceDisplay = document.querySelector('.price h3');
+        const plusButton = document.querySelector('.quantity button:nth-of-type(1)');
+        const minusButton = document.querySelector('.quantity button:nth-of-type(2)');
+
+        // Update price display
+        function updatePrice() {
+            const totalPrice = (originalPrice * quantity).toFixed(2);
+            priceDisplay.textContent = `${totalPrice} br`;
+            quantityDisplay.textContent = quantity; // Update quantity display
+        }
+
+        // Handle '+' button click
+        plusButton.addEventListener('click', function() {
+            quantity++;
+            updatePrice();
+        });
+
+        // Handle '-' button click
+        minusButton.addEventListener('click', function() {
+            if (quantity > 1) {
+                quantity--;
+                updatePrice();
+            }
+        });
+
+        // Initial display
+        updatePrice();
+    });
+</script>
+</body>
+</html>
