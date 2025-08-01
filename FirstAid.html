@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>First Aid App - Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#EC4899', // Pink-red color
+                        'primary-dark': '#BE185D',
+                        'primary-light': '#F9A8D4',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .form-transition {
+            transition: all 0.3s ease-in-out;
+        }
+        
+        .shake {
+            animation: shake 0.5s ease-in-out;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        
+        .success-pulse {
+            animation: pulse 0.6s ease-in-out;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .slide-up {
+            animation: slideUp 0.4s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-white to-pink-50 dark:from-gray-900 dark:to-gray-800">
+    <!-- Background Pattern -->
+    <div class="absolute inset-0 opacity-5">
+        <svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+            <g fill="none" fill-rule="evenodd">
+                <g fill="#EC4899" fill-opacity="0.1">
+                    <circle cx="30" cy="30" r="4"/>
+                    <circle cx="15" cy="15" r="2"/>
+                    <circle cx="45" cy="45" r="2"/>
+                    <circle cx="15" cy="45" r="1"/>
+                    <circle cx="45" cy="15" r="1"/>
+                </g>
+            </g>
+        </svg>
+    </div>
+
+    <div class="flex items-center justify-center min-h-screen p-4 relative z-10">
+        <div class="w-full max-w-md">
+            <!-- App Logo/Header -->
+            <div class="text-center mb-8 slide-up">
+                <div class="w-20 h-20 mx-auto mb-4">
+                    <img src="https://pfst.cf2.poecdn.net/base/image/b29245e0d3f5efd5562d520c40d542d181b5e43fd28ce1dce815909f9197c7a4?w=222&h=176" 
+                         alt="First Aid App Logo" 
+                         class="w-full h-full object-contain drop-shadow-lg">
+                </div>
+                <h1 class="text-3xl font-bold text-gray-800 dark:text-white">First Aid</h1>
+                <p class="text-gray-600 dark:text-gray-300">Emergency assistance at your fingertips</p>
+            </div>
+
+            <!-- Form Container -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 form-transition slide-up">
+                <!-- Toggle Buttons -->
+                <div class="flex bg-gray-100 dark:bg-gray-700 rounded-lg p-1 mb-6">
+                    <button id="loginTab" class="flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all duration-200 bg-primary text-white">
+                        Login
+                    </button>
+                    <button id="signupTab" class="flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all duration-200 text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white">
+                        Sign Up
+                    </button>
+                </div>
+
+                <!-- Success Message -->
+                <div id="successMessage" class="hidden mb-4 p-4 bg-green-100 dark:bg-green-900 border border-green-400 text-green-700 dark:text-green-300 rounded-lg">
+                    <div class="flex items-center">
+                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/>
+                        </svg>
+                        <span id="successText">Success!</span>
+                    </div>
+                </div>
+
+                <!-- Error Message -->
+                <div id="errorMessage" class="hidden mb-4 p-4 bg-red-100 dark:bg-red-900 border border-red-400 text-red-700 dark:text-red-300 rounded-lg">
+                    <div class="flex items-center">
+                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"/>
+                        </svg>
+                        <span id="errorText">Please check your input</span>
+                    </div>
+                </div>
+
+                <!-- Login Form -->
+                <form id="loginForm" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email</label>
+                        <input type="email" id="loginEmail" class="w-full px-4 py-3 text-base border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:text-white transition-all duration-200" placeholder="Enter your email" required>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Password</label>
+                        <div class="relative">
+                            <input type="password" id="loginPassword" class="w-full px-4 py-3 text-base border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:text-white transition-all duration-200" placeholder="Enter your password" required>
+                            <button type="button" id="toggleLoginPassword" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center justify-between">
+                        <label class="flex items-center">
+                            <input type="checkbox" class="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary">
+                            <span class="ml-2 text-sm text-gray-600 dark:text-gray-300">Remember me</span>
+                        </label>
+                        <a href="#" class="text-sm text-primary hover:text-primary-dark">Forgot password?</a>
+                    </div>
+                    
+                    <button type="submit" id="loginBtn" class="w-full bg-primary hover:bg-primary-dark text-white font-medium py-3 px-4 rounded-lg transition-all duration-200 transform hover:scale-105 focus:ring-4 focus:ring-primary-light">
+                        <span class="flex items-center justify-center">
+                            <span id="loginBtnText">Sign In</span>
+                            <svg id="loginSpinner" class="hidden animate-spin ml-2 w-5 h-5" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                        </span>
+                    </button>
+                </form>
+
+                <!-- Sign Up Form -->
+                <form id="signupForm" class="space-y-4 hidden">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Full Name</label>
+                        <input type="text" id="signupName" class="w-full px-4 py-3 text-base border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:text-white transition-all duration-200" placeholder="Enter your full name" required>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email</label>
+                        <input type="email" id="signupEmail" class="w-full px-4 py-3 text-base border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:text-white transition-all duration-200" placeholder="Enter your email" required>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Password</label>
+                        <div class="relative">
+                            <input type="password" id="signupPassword" class="w-full px-4 py-3 text-base border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:text-white transition-all duration-200" placeholder="Create a password" required>
+                            <button type="button" id="toggleSignupPassword" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Confirm Password</label>
+                        <input type="password" id="confirmPassword" class="w-full px-4 py-3 text-base border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:text-white transition-all duration-200" placeholder="Confirm your password" required>
+                    </div>
+                    
+                    <div class="flex items-center">
+                        <input type="checkbox" id="agreeTerms" class="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary" required>
+                        <span class="ml-2 text-sm text-gray-600 dark:text-gray-300">I agree to the <a href="#" class="text-primary hover:text-primary-dark">Terms and Conditions</a></span>
+                    </div>
+                    
+                    <button type="submit" id="signupBtn" class="w-full bg-primary hover:bg-primary-dark text-white font-medium py-3 px-4 rounded-lg transition-all duration-200 transform hover:scale-105 focus:ring-4 focus:ring-primary-light">
+                        <span class="flex items-center justify-center">
+                            <span id="signupBtnText">Create Account</span>
+                            <svg id="signupSpinner" class="hidden animate-spin ml-2 w-5 h-5" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                        </span>
+                    </button>
+                </form>
+
+                <!-- Emergency Access -->
+                <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-600 text-center">
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">Need immediate help?</p>
+                    <button class="text-primary hover:text-primary-dark font-medium text-sm flex items-center justify-center mx-auto">
+                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"/>
+                        </svg>
+                        Emergency Access
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dark mode detection
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+        }
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            if (event.matches) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        });
+
+        // DOM elements
+        const loginTab = document.getElementById('loginTab');
+        const signupTab = document.getElementById('signupTab');
+        const loginForm = document.getElementById('loginForm');
+        const signupForm = document.getElementById('signupForm');
+        const successMessage = document.getElementById('successMessage');
+        const errorMessage = document.getElementById('errorMessage');
+        const successText = document.getElementById('successText');
+        const errorText = document.getElementById('errorText');
+
+        // Mock user database (in real app, this would be handled by backend)
+        let users = [
+            { email: 'demo@firstaid.com', password: 'demo123', name: 'Demo User' }
+        ];
+
+        // Tab switching
+        loginTab.addEventListener('click', () => {
+            switchToLogin();
+        });
+
+        signupTab.addEventListener('click', () => {
+            switchToSignup();
+        });
+
+        function switchToLogin() {
+            loginTab.classList.add('bg-primary', 'text-white');
+            loginTab.classList.remove('text-gray-600', 'dark:text-gray-300');
+            signupTab.classList.remove('bg-primary', 'text-white');
+            signupTab.classList.add('text-gray-600', 'dark:text-gray-300');
+            
+            loginForm.classList.remove('hidden');
+            signupForm.classList.add('hidden');
+            hideMessages();
+        }
+
+        function switchToSignup() {
+            signupTab.classList.add('bg-primary', 'text-white');
+            signupTab.classList.remove('text-gray-600', 'dark:text-gray-300');
+            loginTab.classList.remove('bg-primary', 'text-white');
+            loginTab.classList.add('text-gray-600', 'dark:text-gray-300');
+            
+            signupForm.classList.remove('hidden');
+            loginForm.classList.add('hidden');
+            hideMessages();
+        }
+
+        // Password visibility toggle
+        document.getElementById('toggleLoginPassword').addEventListener('click', () => {
+            togglePasswordVisibility('loginPassword', 'toggleLoginPassword');
+        });
+
+        document.getElementById('toggleSignupPassword').addEventListener('click', () => {
+            togglePasswordVisibility('signupPassword', 'toggleSignupPassword');
+        });
+
+        function togglePasswordVisibility(inputId, buttonId) {
+            const input = document.getElementById(inputId);
+            const button = document.getElementById(buttonId);
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                button.innerHTML = `
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"></path>
+                    </svg>
+                `;
+            } else {
+                input.type = 'password';
+                button.innerHTML = `
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                    </svg>
+                `;
+            }
+        }
+
+        // Form handling
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            handleLogin();
+        });
+
+        signupForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            handleSignup();
+        });
+
+        async function handleLogin() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const loginBtn = document.getElementById('loginBtn');
+            const loginBtnText = document.getElementById('loginBtnText');
+            const loginSpinner = document.getElementById('loginSpinner');
+
+            if (!email || !password) {
+                showError('Please fill in all fields');
+                return;
+            }
+
+            // Show loading state
+            loginBtn.disabled = true;
+            loginBtnText.textContent = 'Signing In...';
+            loginSpinner.classList.remove('hidden');
+
+            // Simulate API call
+            await new Promise(resolve => setTimeout(resolve, 1500));
+
+            // Check credentials
+            const user = users.find(u => u.email === email && u.password === password);
+            
+            if (user) {
+                showSuccess(`Welcome back, ${user.name}!`);
+                // In a real app, you would redirect to the main app or dashboard
+                setTimeout(() => {
+                    showSuccess('Login successful! Redirecting to dashboard...');
+                }, 1000);
+            } else {
+                showError('Invalid email or password');
+                loginForm.classList.add('shake');
+                setTimeout(() => loginForm.classList.remove('shake'), 500);
+            }
+
+            // Reset button state
+            loginBtn.disabled = false;
+            loginBtnText.textContent = 'Sign In';
+            loginSpinner.classList.add('hidden');
+        }
+
+        async function handleSignup() {
+            const name = document.getElementById('signupName').value;
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const agreeTerms = document.getElementById('agreeTerms').checked;
+            const signupBtn = document.getElementById('signupBtn');
+            const signupBtnText = document.getElementById('signupBtnText');
+            const signupSpinner = document.getElementById('signupSpinner');
+
+            // Validation
+            if (!name || !email || !password || !confirmPassword) {
+                showError('Please fill in all fields');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                showError('Passwords do not match');
+                return;
+            }
+
+            if (password.length < 6) {
+                showError('Password must be at least 6 characters long');
+                return;
+            }
+
+            if (!agreeTerms) {
+                showError('Please agree to the Terms and Conditions');
+                return;
+            }
+
+            // Check if email already exists
+            if (users.find(u => u.email === email)) {
+                showError('An account with this email already exists');
+                return;
+            }
+
+            // Show loading state
+            signupBtn.disabled = true;
+            signupBtnText.textContent = 'Creating Account...';
+            signupSpinner.classList.remove('hidden');
+
+            // Simulate API call
+            await new Promise(resolve => setTimeout(resolve, 2000));
+
+            // Create new user
+            users.push({ email, password, name });
+            
+            showSuccess(`Account created successfully! Welcome, ${name}!`);
+            signupForm.classList.add('success-pulse');
+            
+            // Switch to login after success
+            setTimeout(() => {
+                switchToLogin();
+                document.getElementById('loginEmail').value = email;
+                signupForm.classList.remove('success-pulse');
+                signupForm.reset();
+            }, 2000);
+
+            // Reset button state
+            signupBtn.disabled = false;
+            signupBtnText.textContent = 'Create Account';
+            signupSpinner.classList.add('hidden');
+        }
+
+        function showSuccess(message) {
+            hideMessages();
+            successText.textContent = message;
+            successMessage.classList.remove('hidden');
+            successMessage.classList.add('slide-up');
+            setTimeout(() => successMessage.classList.remove('slide-up'), 400);
+        }
+
+        function showError(message) {
+            hideMessages();
+            errorText.textContent = message;
+            errorMessage.classList.remove('hidden');
+            errorMessage.classList.add('slide-up');
+            setTimeout(() => errorMessage.classList.remove('slide-up'), 400);
+        }
+
+        function hideMessages() {
+            successMessage.classList.add('hidden');
+            errorMessage.classList.add('hidden');
+        }
+
+        // Input validation feedback
+        const inputs = document.querySelectorAll('input[type="email"], input[type="password"], input[type="text"]');
+        inputs.forEach(input => {
+            input.addEventListener('blur', () => {
+                if (input.value && input.checkValidity()) {
+                    input.classList.add('border-green-500');
+                    input.classList.remove('border-red-500');
+                } else if (input.value) {
+                    input.classList.add('border-red-500');
+                    input.classList.remove('border-green-500');
+                } else {
+                    input.classList.remove('border-green-500', 'border-red-500');
+                }
+            });
+
+            input.addEventListener('input', () => {
+                input.classList.remove('border-red-500', 'border-green-500');
+            });
+        });
+
+        // Real-time password validation for signup
+        document.getElementById('signupPassword').addEventListener('input', function() {
+            const password = this.value;
+            const confirmPassword = document.getElementById('confirmPassword');
+            
+            if (confirmPassword.value && password !== confirmPassword.value) {
+                confirmPassword.classList.add('border-red-500');
+                confirmPassword.classList.remove('border-green-500');
+            } else if (confirmPassword.value && password === confirmPassword.value) {
+                confirmPassword.classList.add('border-green-500');
+                confirmPassword.classList.remove('border-red-500');
+            }
+        });
+
+        document.getElementById('confirmPassword').addEventListener('input', function() {
+            const password = document.getElementById('signupPassword').value;
+            const confirmPassword = this.value;
+            
+            if (confirmPassword && password !== confirmPassword) {
+                this.classList.add('border-red-500');
+                this.classList.remove('border-green-500');
+            } else if (confirmPassword && password === confirmPassword) {
+                this.classList.add('border-green-500');
+                this.classList.remove('border-red-500');
+            }
+        });
+
+        // Demo credentials hint
+        console.log('Demo credentials: email: demo@firstaid.com, password: demo123');
+    </script>
+</body>
+</html>
