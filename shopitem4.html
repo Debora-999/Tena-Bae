@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="shopeitem4.css">
+    <title>Shop Item</title>
+</head>
+<body>
+    <div class="main">
+       <a href="home.html">
+         <button class="back-button" id="back">Back</button>
+       </a>
+        <div class="item">
+            <img src="https://th.bing.com/th/id/R.68475b9febbe79fab244dab1730f517c?rik=Azt3IPb82%2b4WoQ&pid=ImgRaw&r=0" alt="Gauze Bandage">
+            <div class="disc">
+                <h3>
+                    Our Gauze Bandage is essential for wound care. Soft and breathable, it provides excellent absorption and protection for cuts and scrapes. Ideal for home use or in your first aid kit, it promotes healing while keeping the wound clean!
+                </h3>
+            </div>
+        </div>
+        <div class="price">
+            <h3>250.00 br</h3>
+        </div>
+        <div class="quantity">
+            <button>+</button>
+            <span>1</span> 
+            <button>-</button>
+        </div>
+        <div class="shopenow">
+            <button>Shop Now</button>
+        </div>
+    </div>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const originalPrice = 250.00; 
+        let quantity = 1; 
+
+        const quantityDisplay = document.querySelector('.quantity span');
+        const priceDisplay = document.querySelector('.price h3');
+        const plusButton = document.querySelector('.quantity button:nth-of-type(1)');
+        const minusButton = document.querySelector('.quantity button:nth-of-type(2)');
+
+        
+        function updatePrice() {
+            const totalPrice = (originalPrice * quantity).toFixed(2);
+            priceDisplay.textContent = `${totalPrice} br`;
+            quantityDisplay.textContent = quantity; 
+        }
+
+        
+        plusButton.addEventListener('click', function() {
+            quantity++;
+            updatePrice();
+        });
+
+        
+        minusButton.addEventListener('click', function() {
+            if (quantity > 1) {
+                quantity--;
+                updatePrice();
+            }
+        });
+
+        
+        updatePrice();
+    });
+</script>
+</body>
+</html>
