@@ -27,10 +27,10 @@
         <div class="disc">
             <H2>Welcome to TenaBae</H2>
             <p>
+                Tena Bae is your go-to resource for essential emergency response measures.
+                We provide clear instructions for handling common emergencies, ensuring you're prepared when it counts. Additionally, our online shop offers a variety of first aid kits and emergency equipment, making it easy to stay equipped for any situation.
+                Empower yourself with knowledge and the right tools for safety. 
 
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse molestiae quo, atque labore nobis odio
-                magni temporibus totam ex. Quia autem sequi laudantium tempora nesciunt placeat atque perferendis ipsam
-                ducimus.
 
             </p>
         </div>
@@ -78,7 +78,7 @@
         </a>
         <a href="hypo.html">
             <div class="grid6">
-                <img src="https://th.bing.com/th?id=OIF.TFTT%2fOmGXaxdGg9pQ3aHLg&w=299&h=180&c=7&r=0&o=7&dpr=1.1&pid=1.7&rm=3" alt="">
+                <img src="https://th.bing.com/th?id=OIF.vo%2b4uoDH%2bJL3EmGpdaRNIg&w=164&h=180&c=7&r=0&o=5&pid=1.7" alt="">
                 <h2>Hyporglycemia</h2>
             </div>
         </a>
@@ -117,7 +117,7 @@
         </a>
         <a href="shopeitem3.html">
             <div class="shopitem3">
-            <img src="https://th.bing.com/th/id/OIP.0YNQwKLltkHBDpo4AtI0XgHaHH?r=0&rs=1&pid=ImgDetMain"
+            <img src="https://tse3.mm.bing.net/th/id/OIP.V6OHcCCZcl86vyj5HublSgHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3"
                 alt="">
             <h3>Hand Sanitizing Wipes</h3>
             
@@ -132,6 +132,7 @@
         </div>
        </a>
     </div>
+ update-fixes-and-functionality
 
    <div class="contact" id="contact">
     <form id="contactForm">
@@ -204,22 +205,67 @@
             <input type="text" placeholder="Last name">
         </div>
 
-        <div class="email">
-            <h3>Email</h3>
-            <input type="email" placeholder="Enter your Email" required>
-
+   <div class="contact" id="contact">
+    <form id="contactForm">
+        <div class="contact" id="contact">
+            <div class="name">
+                <h3>First Name</h3>
+                <input type="text" id="first_name" placeholder="First Name" required>
+            </div>
+    
+            <div class="lastname">
+                <h3>Last Name</h3>
+                <input type="text" id="last_name" placeholder="Last name">
+            </div>
+    
+            <div class="email">
+                <h3>Email</h3>
+                <input type="email" id="email" placeholder="Enter your Email" required>
+            </div>
+    
+            <div class="yourmessage">
+                <h3>Your Message</h3>
+                <input type="text" id="message" placeholder="your message" required>
+            </div>
+    
+            <div class="but">
+                <button type="submit">Submit</button>
+            </div>
         </div>
-
-        <div class="yourmessage">
-            <h3>Your Message</h3>
-            <input type="text" placeholder="your message" required id="your">
-        </div>
-        <div class="but">
-            <button>Submit</button>
-        </div>
-
-
-    </div>
+    </form>
+    
+    <script>
+    document.getElementById("contactForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+    
+        const data = {
+            first_name: document.getElementById("first_name").value,
+            last_name: document.getElementById("last_name").value,
+            email: document.getElementById("email").value,
+            message: document.getElementById("message").value
+        };
+    
+        fetch("http://localhost:3000/submit-form", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        })
+        .then(res => res.json())
+        .then(response => {
+            if (response.success) {
+                alert("Your message was sent successfully!");
+                document.getElementById("contactForm").reset();
+            } else {
+                alert("There was a problem. Try again.");
+            }
+        })
+        .catch(err => console.error("Error:", err));
+    });
+    </script>    
+  
+    
 
     <div class="bottom">
         <div class="allinformation">

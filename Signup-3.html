@@ -9,20 +9,52 @@
 <body>
     <div class="signup">
         <h2>Sign up</h2>
-        <div class="inputs">
-            <h3>Name</h3>
-            <input type="text" placeholder="Enter Your Full Name" required>
-            <h3> Email</h3>
-            <input type="email" placeholder="Enter Your Email " required>
-            <h3> Password</h3>
-            <input type="password" placeholder="Password" required>
-            <h3>Re Write password</h3>
-            <input type="password" placeholder="Password" required>
-            <input type="checkbox" required><h3>I agree with the terms and conditions</h3>
-            <button> <a href="home.html">Signup</a></button>
-            <h3><a href="login.html">login</a></h3>
-        </div>
+        <form id="signupForm">
+            <div class="inputs">
+                <h3>Name</h3>
+                <input type="text" id="name" placeholder="Enter Your Full Name" required>
+                <h3>Email</h3>
+                <input type="email" id="email" placeholder="Enter Your Email" required>
+                <h3>Password</h3>
+                <input type="password" id="password" placeholder="Password" required>
+                <h3>Re-enter Password</h3>
+                <input type="password" id="confirmPassword" placeholder="Password" required>
+                <input type="checkbox" id="terms" required>
+                <h3>I agree with the terms and conditions</h3>
+                <button type="submit"> <a href="home.html"> Signup</a></button>
+                <h3><a href="login.html">Login</a></h3>
+            </div>
+        </form>
     </div>
     
+    <script>
+        document.getElementById('signupForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                password: document.getElementById('password').value,
+                confirmPassword: document.getElementById('confirmPassword').value,
+                terms: document.getElementById('terms').checked
+            };
+
+            fetch('http://localhost:3000/signup', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                if (data.message === 'Account created successfully!') {
+                    window.location.href = 'home.html';
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
 </body>
 </html>
