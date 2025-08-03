@@ -1,77 +1,27 @@
+const express = require("express");
+const cors = require("cors");
+const sqlite3 = require("sqlite3").verbose();
+const bodyParser = require("body-parser");
+
 const app = express();
 const PORT = 3000;
 
- update-fixes-and-functionality
-app.use(cors());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-app.post('/signup', (req, res) => {
-    const { name, email, password, confirmPassword, terms } = req.body;
-
-    
-    if (!name || !email || !password || !confirmPassword) {
-        return res.status(400).json({ message: 'Please fill all required fields.' });
-    }
-
-
-    if (password !== confirmPassword) {
-        return res.status(400).json({ message: 'Passwords do not match.' });
-    }
-
-
-    if (!terms) {
-        return res.status(400).json({ message: 'You must agree to the terms and conditions.' });
-    }
-
-
-    db.run("INSERT INTO users (name, email, password) VALUES (?, ?, ?)", [name, email, password], function(err) {
-        if (err) {
-            if (err.code === 'SQLITE_CONSTRAINT') {
-                return res.status(400).json({ message: 'Email already exists.' });
-            }
-            return res.status(500).json({ message: 'Error creating account.' });
-        }
-        res.status(201).json({ message: 'Account created successfully!' });
-    });
-});
-
-app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-});
-
-app.post('/login', (req, res) => {
-    const { email, password } = req.body;
-
-    if (!email || !password) {
-        return res.status(400).json({ message: 'Please provide both email and password.' });
-    }
-
-    db.get("SELECT * FROM users WHERE email = ? AND password = ?", [email, password], (err, row) => {
-        if (err) {
-            return res.status(500).json({ message: 'Database error.' });
-        }
-        if (!row) {
-            return res.status(401).json({ message: 'Invalid email or password.' });
-        }
-        res.status(200).json({ message: 'Login successful!', user: row });
-    });
-});
-
-app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-});
-=======
 // Middleware
 app.use(cors());
-app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-// SQLite DB
-const db = new sqlite3.Database('database.db');
+// Database setup
+const db = new sqlite3.Database("./tenabae.db", (err) => {
+    if (err) {
+        console.error("Error opening database:", err.message);
+    } else {
+        console.log("Connected to SQLite database.");
+    }
+});
 
-// Create table
+// Create contact table if not exists
 db.run(`
-    CREATE TABLE IF NOT EXISTS contacts (
+    CREATE TABLE IF NOT EXISTS contact_messages (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         first_name TEXT NOT NULL,
         last_name TEXT,
@@ -80,23 +30,25 @@ db.run(`
     )
 `);
 
-// Route to receive contact data
-app.post('/submit-form', (req, res) => {
+// Endpoint to handle form submission
+app.post("/submit-form", (req, res) => {
     const { first_name, last_name, email, message } = req.body;
-    db.run(
-        `INSERT INTO contacts (first_name, last_name, email, message) VALUES (?, ?, ?, ?)`,
-        [first_name, last_name, email, message],
-        (err) => {
-            if (err) {
-                console.error(err);
-                res.status(500).send({ success: false });
-            } else {
-                res.send({ success: true });
-            }
+
+    const query = `
+        INSERT INTO contact_messages (first_name, last_name, email, message)
+        VALUES (?, ?, ?, ?)
+    `;
+
+    db.run(query, [first_name, last_name, email, message], function (err) {
+        if (err) {
+            console.error("Database insert error:", err.message);
+            return res.json({ success: false });
         }
-    );
+        res.json({ success: true });
+    });
 });
 
+// Start the server
 app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`Server is running on http://localhost:${PORT}`);
 });
